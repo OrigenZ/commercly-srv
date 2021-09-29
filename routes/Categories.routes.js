@@ -2,97 +2,84 @@ const router = require('express').Router()
 const Category = require('../models/Category.model')
 const Product = require('../models/Product.model')
 
-//GET List categories
+// GET /api/categories - Gets all categories from the database
 router.get('/', (_, res, next) => {
   Category.find()
     .then((categories) => {
-      res.render('categories/categories-list', { categories: categories })
+      res.status(200).json(categories)
     })
     .catch((err) => next(err))
 })
 
-//GET create category
-router.get('/create', (_, res, next) => {
-  res.render('categories/new-category')
+//GET /api/categories/search - Finds categories by name
+router.get('/search', (req, res, next) => {
+  const { query } = req.body
+
+  Category.find({
+    name: { $regex: query, $options: 'i' },
+  })
+    .then((categories) => res.status(200).json(categories))
+    .catch((err) => next(err))
 })
 
-//POST create category
-router.post('/create', (req, res, next) => {
-  const { name, description } = req.body
-
-  Category.create({ name, description })
-    .then(() => res.redirect('/categories'))
-    .catch((err) => res.render('categories/new-category', err.message))
-})
-
-//GET Find category
+//GET /api/categories/:id - Gets a category by id from the database
 router.get('/:id', (req, res, next) => {
   const { id } = req.params
 
   Category.findById(id)
     .populate('products')
     .then((category) => {
-      res.render('categories/category-details', category)
+      res.status(200).json(category)
     })
     .catch((err) => next(err))
 })
 
-//POST Search products by name or brand
-router.post('/search', async (req, res, next) => {
-  const { query } = req.body
-  try {
-    const categories = await Category.find({
-      name: { $regex: query, $options: 'i' },
-    })
-    res.render('categories/categories-list', {
-      categories,
-    })
-  } catch (err) {
-    next(err)
-  }
-})
+//POST /api/categories/create - Creates a new category in the database
+router.post('/create', (req, res, next) => {
+  const { name, description } = req.body
 
-//POST delete category // Check if category products is empty, otherwise need warning to delete the products associated first
-router.post('/delete/:id', (req, res, next) => {
-  const { id } = req.params
-
-  Product.find({ category: { $eq: id } })
-    .then(async (results) => {
-      if (results.length === 0) {
-        await Category.findByIdAndRemove(id).then(res.redirect('/categories'))
-      } else {
-        req.flash(
-          'info',
-          'There are products using the this category. Category could not be deleted.',
-        )
-        res.redirect('/')
-      }
-    })
-    .catch((err) =>
-      res.render('categories/categories-list', { errMessage: err.message }),
-    )
-})
-
-//GET Edit category
-router.get('/edit/:id', (req, res, next) => {
-  const { id } = req.params
-
-  Category.findById(id)
-    .populate('products')
+  Category.create({ name, description })
     .then((category) =>
-      res.render('categories/edit-category', { category: category }),
+      res.status(201).json({
+        category,
+        message: 'Category created successfully.',
+      }),
     )
     .catch((err) => next(err))
 })
 
-//POST edit product
-router.post('/edit/:id', (req, res, next) => {
+// PATCH - /api/categories/:id - Edits a category by id from the database
+router.patch('/:id', (req, res, next) => {
   const { id } = req.params
   const { name, description } = req.body
 
-  Category.findByIdAndUpdate(id, { name, description })
-    .then(res.redirect(`/categories`))
+  Category.findByIdAndUpdate(id, { name, description }, { new: true })
+    .then((category) =>
+      res
+        .status(200)
+        .json({ category, message: 'Category updated successfully' }),
+    )
     .catch((err) => next(err))
+})
+
+/// DELETE - /api/categories/delete/:id - Deletes a category by id from the database if it does not have associated products
+router.delete('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const product = await Product.find({ category: { $eq: id } })
+
+    if (product.length === 0) {
+      await Category.findByIdAndRemove(id)
+      res.status(200).json({ message: 'Category deleted successfully' })
+    } else {
+      res.status(409).json({
+        message:
+          'There are products associated to this category and it could not be deleted.',
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
 })
 
 module.exports = router
