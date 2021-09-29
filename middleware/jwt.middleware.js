@@ -1,5 +1,3 @@
-// middleware/jwt.middleware.js
-
 const jwt = require('express-jwt')
 
 // Function used to extracts the JWT token from the request's 'Authorization' Headers

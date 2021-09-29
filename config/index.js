@@ -13,10 +13,6 @@ const cookieParser = require('cookie-parser')
 // unless the request if from the same domain, by default express wont accept POST requests
 const cors = require('cors')
 
-// ℹ️ global package used to `normalize` paths amongst different operating systems
-// https://www.npmjs.com/package/path
-const path = require('path')
-
 // ℹ️ Session middleware for authentication
 // https://www.npmjs.com/package/express-session
 const session = require('express-session')
