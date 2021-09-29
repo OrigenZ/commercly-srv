@@ -10,13 +10,9 @@ const Cart = require('../models/Cart.model')
 
 const saltRounds = 10
 
-//GET USER DASHBOARD
-
-/*{ user: req.session.currentUser }*/
-
 // POST /auth/signup  - Creates a new user in the database
 router.post('/signup', (req, res, next) => {
-  const { email, password } = req.body
+  const { email, password, adminToken } = req.body
 
   // Check if email or password or name are provided as empty string
   if (!email || !password) {
@@ -65,7 +61,21 @@ router.post('/signup', (req, res, next) => {
       let username = email.substring(0, email.indexOf('@'))
       username = username.charAt(0).toUpperCase() + username.slice(1)
 
-      return User.create({ email, password: hashedPassword, username })
+      if (adminToken === process.env.ADMIN_TOKEN) {
+        return User.create({
+          username,
+          email,
+          password: hashedPassword,
+          isAdmin: true,
+        })
+      } else {
+        return User.create({
+          username,
+          email,
+          password: hashedPassword,
+          isAdmin: false,
+        })
+      }
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
@@ -86,9 +96,7 @@ router.post('/signup', (req, res, next) => {
     })
 })
 
-// #endregion
-
-// #region POST  /auth/login - Verifies email and password and returns a JWT
+// /auth/login - Verifies email and password and returns a JWT
 router.post('/login', (req, res, next) => {
   const { email, password } = req.body
 
@@ -131,9 +139,8 @@ router.post('/login', (req, res, next) => {
     })
     .catch((err) => res.status(500).json({ message: 'Internal Server Error' }))
 })
-// #endregion
 
-// #region GET  /auth/verify  -  Used to verify JWT stored on the client
+// GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get('/verify', isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
@@ -144,6 +151,6 @@ router.get('/verify', isAuthenticated, (req, res, next) => {
   // previously set as the token payload
   res.status(200).json(req.payload)
 })
-// #endregion
+//
 
 module.exports = router
