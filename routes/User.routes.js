@@ -2,7 +2,7 @@ const router = require('express').Router()
 const Address = require('../models/Address.model')
 const User = require('../models/User.model')
 
-// GET /api/customer/:id/addresses - Gets all addresses of a customer by id from the database
+// GET /api/user/:id/addresses - Gets all addresses of a user by id from the database
 router.get('/:userId/addresses', async (req, res, next) => {
   const { userId } = req.params
 
@@ -16,7 +16,7 @@ router.get('/:userId/addresses', async (req, res, next) => {
   })
 })
 
-// POST /api/customer/:userId/new-address/:type - Creates an address for a customer in the database depending on the address type
+// POST /api/user/:userId/new-address/:type - Creates an address for a user in the database depending on the address type
 router.post('/:userId/new-address/:type', async (req, res, next) => {
   const { type, userId } = req.params
 
@@ -58,14 +58,14 @@ router.post('/:userId/new-address/:type', async (req, res, next) => {
 
     res.status(200).json({
       address,
-      message: `Customer ${type} address created successfully`,
+      message: `User ${type} address created successfully`,
     })
   } catch (err) {
     next(err)
   }
 })
 
-// PATCH /api/customer/address/:addressId/:type - Updates an address for a customer in the database depending on the address type
+// PATCH /api/user/address/:addressId/:type - Updates an address for a user in the database depending on the address type
 router.patch('/:userId/address/:type', async (req, res, next) => {
   const { type, userId } = req.params
   const {
@@ -110,7 +110,7 @@ router.patch('/:userId/address/:type', async (req, res, next) => {
 
     res.status(200).json({
       address,
-      message: `Customer ${type} address edited successfully`,
+      message: `User ${type} address edited successfully`,
     })
   } catch (err) {
     next(err)

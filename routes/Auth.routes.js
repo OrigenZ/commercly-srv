@@ -29,8 +29,7 @@ router.post('/signup', (req, res, next) => {
   }
 
   // Use regex to validate the password format
-  // comprobar la contraseña directamente encriptada desde el front
-  // TODO: checkear
+  // TODO: comprobar la contraseña directamente encriptada desde el front
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 
   if (!passwordRegex.test(password)) {
@@ -43,7 +42,7 @@ router.post('/signup', (req, res, next) => {
 
   // Check the users collection if a user with the same email already exists
   User.findOne({ email })
-    .then((foundUser) => {
+    .then(async (foundUser) => {
       // If the user with the same email already exists, send an error response
       if (foundUser) {
         res.status(400).json({ message: 'User already exists.' })
@@ -55,9 +54,8 @@ router.post('/signup', (req, res, next) => {
       const hashedPassword = bcryptjs.hashSync(password, salt)
 
       // Create the new user in the database
-      // We return a pending promise, which allows us to chain another `then`
 
-      //Take the first part of the email to use as predefined username
+      // Take the first part of the email to use as predefined username
       let username = email.substring(0, email.indexOf('@'))
       username = username.charAt(0).toUpperCase() + username.slice(1)
 
@@ -77,18 +75,22 @@ router.post('/signup', (req, res, next) => {
         })
       }
     })
-    .then((createdUser) => {
-      // Deconstruct the newly created user object to omit the password
-      // We should never expose passwords publicly
-      const { email, username, _id, isAdmin } = createdUser
+    .then(async (user) => {
+      // Create a new cart for the newly created user
+      const cart = await Cart.create({ customer: user._id })
 
-      // Create a new object that doesn't expose the password
-      const user = { email, username, _id, isAdmin }
+      const newUser = await User.findByIdAndUpdate(
+        user._id,
+        { cart: cart._id },
+        { new: true },
+      )
+
+      // We should never expose passwords publicly
+      newUser.password = undefined
 
       // Send a json response containing the user object
-      res.status(201).json({ user: user })
+      res.status(201).json({ user: newUser })
     })
-
     .catch((err) => next(err))
 })
 
@@ -116,11 +118,10 @@ router.post('/login', (req, res, next) => {
       const passwordCorrect = bcryptjs.compareSync(password, foundUser.password)
 
       if (passwordCorrect) {
-        // Deconstruct the user object to omit the password
-        const { _id, email, username } = foundUser
+        foundUser.password = undefined
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, username, isAdmin }
+        const payload = { ...foundUser }
 
         // Create and sign the token
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {

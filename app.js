@@ -32,14 +32,11 @@ app.use('/api/products', isAuthenticated, products)
 const categories = require('./routes/Categories.routes')
 app.use('/api/categories', isAuthenticated, categories)
 
-const shop = require('./routes/Shop.routes')
-app.use('/api/shop', isAuthenticated, shop)
+const cart = require('./routes/Cart.routes')
+app.use('/api/cart', isAuthenticated, cart)
 
-const admin = require('./routes/Admin.routes')
-app.use('/api/admin', isAuthenticated, admin)
-
-const customer = require('./routes/Customer.routes')
-app.use('/api/customer', isAuthenticated, customer)
+const user = require('./routes/User.routes')
+app.use('/api/user', isAuthenticated, user)
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app)
