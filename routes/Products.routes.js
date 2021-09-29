@@ -6,10 +6,10 @@ const Category = require('../models/Category.model')
 
 const fileUploader = require('../config/cloudinary.config')
 
-//GET /products - Gets all products from the database
+//GET /api/products - Gets all products from the database
 router.get('/', (_, res, next) => {
   Product.find()
-    .populate('category')
+    // .populate('category')
     .then((products) => res.status(200).json({ products }))
     .catch((err) => next(err))
 })
@@ -36,7 +36,7 @@ router.get('/search', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   const { id } = req.params
   Product.findById(id)
-    .populate('category')
+   /*  .populate('category') */
     .then((product) => res.status(200).json(product))
     .catch((err) => next(err))
 })
