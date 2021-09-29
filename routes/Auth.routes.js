@@ -80,10 +80,10 @@ router.post('/signup', (req, res, next) => {
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, username, _id } = createdUser
+      const { email, username, _id, isAdmin } = createdUser
 
       // Create a new object that doesn't expose the password
-      const user = { email, username, _id }
+      const user = { email, username, _id, isAdmin }
 
       // Send a json response containing the user object
       res.status(201).json({ user: user })
