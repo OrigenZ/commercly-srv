@@ -37,9 +37,14 @@ module.exports = model(
         required: true,
       },
       isAdmin: Boolean,
+      cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'Cart',
+      },
     },
     {
       timestamps: true,
+      versionKey: false,
     },
   ),
 )

@@ -16,7 +16,7 @@ module.exports = model(
     },
     {
       timestamps: true,
+      versionKey: false,
     },
   ),
 )
-
