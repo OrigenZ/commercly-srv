@@ -107,21 +107,21 @@ router.post('/login', (req, res, next) => {
 
   // Check the users collection if a user with the same email exists
   User.findOne({ email })
-    .then((foundUser) => {
-      if (!foundUser) {
+    .then((user) => {
+      if (!user) {
         // If the user is not found, send an error response
         res.status(401).json({ message: 'User not found.' })
         return
       }
 
       // Compare the provided password with the one saved in the database
-      const passwordCorrect = bcryptjs.compareSync(password, foundUser.password)
+      const passwordCorrect = bcryptjs.compareSync(password, user.password)
 
       if (passwordCorrect) {
-        foundUser.password = undefined
+        user.password = undefined
 
         // Create an object that will be set as the token payload
-        const payload = { foundUser }
+        const payload = user
 
         // Create and sign the token
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
