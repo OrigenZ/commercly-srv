@@ -1,9 +1,6 @@
 const router = require('express').Router()
-// const multer = require('multer')
-// const upload = multer({ dest: './public/uploads/' })
 const Product = require('../models/Product.model')
 const Category = require('../models/Category.model')
-
 const fileUploader = require('../config/cloudinary.config')
 
 //GET /api/products - Gets all products from the database
@@ -14,7 +11,7 @@ router.get('/', (_, res, next) => {
     .catch((err) => next(err))
 })
 
-//GET /products/search - Finds products by name or brand from the database
+//GET /api/products/search - Finds products by name or brand from the database
 router.get('/search', (req, res, next) => {
   const { query } = req.body
 
@@ -32,7 +29,7 @@ router.get('/search', (req, res, next) => {
     })
 })
 
-//GET /products/:id - Gets a product by id from the database
+//GET /api/products/:id - Gets a product by id from the database
 router.get('/:id', (req, res, next) => {
   const { id } = req.params
   Product.findById(id)
@@ -41,7 +38,7 @@ router.get('/:id', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-// GET /products/filter/:id - Finds products by category in the database
+// GET /api/products/filter/:id - Finds products by category in the database
 router.get('/filter/:id', (req, res, next) => {
   const { id } = req.params
 
@@ -55,7 +52,7 @@ router.get('/filter/:id', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-// POST /products/create  - Creates a new product in the database
+// POST /api/products/create  - Creates a new product in the database
 router.post(
   '/create',
   fileUploader.single('imageUrl'),
@@ -64,7 +61,7 @@ router.post(
     const imageUrl = req.file.path
 
     try {
-      const newProduct = await Product.create({
+      const product = await Product.create({
         name,
         price,
         description,
@@ -73,18 +70,24 @@ router.post(
         imageUrl,
       })
 
-      await Category.findByIdAndUpdate(newProduct.category, {
-        $push: { products: { _id: newProduct._id } },
+      await Category.findByIdAndUpdate(product.category, {
+        $push: { products: { _id: product._id } },
       })
 
-      res.status(200).json(newProduct)
+      res
+        .status(201)
+        .json(
+          res
+            .status(200)
+            .json({ product, message: 'Product created successfully' }),
+        )
     } catch (err) {
       next(err)
     }
   },
 )
 
-// PATCH - /products/:id - Edits a product from the database
+// PATCH - /api/products/:id - Edits a product by id from the database
 router.patch(
   '/:id',
   fileUploader.single('imageUrl'),
@@ -107,12 +110,16 @@ router.patch(
       },
       { new: true },
     )
-      .then((editedProduct) => res.status(200).json(editedProduct))
+      .then((product) =>
+        res
+          .status(200)
+          .json({ product, message: 'Product updated successfully' }),
+      )
       .catch((err) => next(err))
   },
 )
 
-// DELETE - /products/delete/:id deletes a product from the database
+// DELETE - /api/products/delete/:id - Deletes a product by id from the database
 router.delete('/:id', async (req, res, next) => {
   const { id } = req.params
 
@@ -125,7 +132,7 @@ router.delete('/:id', async (req, res, next) => {
 
     await Product.deleteOne(product)
 
-    res.status(204).json({ message: 'Product deleted succesfully' })
+    res.status(200).json({ message: 'Product deleted succesfully' })
   } catch (err) {
     next(err)
   }

@@ -89,11 +89,7 @@ router.post('/signup', (req, res, next) => {
       res.status(201).json({ user: user })
     })
 
-    .catch((err) => {
-      console.log(err)
-
-      res.status(500).json({ message: 'Internal Server Error' })
-    })
+    .catch((err) => next(err))
 })
 
 // /auth/login - Verifies email and password and returns a JWT
@@ -137,7 +133,7 @@ router.post('/login', (req, res, next) => {
         res.status(401).json({ message: 'Unable to authenticate the user' })
       }
     })
-    .catch((err) => res.status(500).json({ message: 'Internal Server Error' }))
+    .catch((err) => next(err))
 })
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
