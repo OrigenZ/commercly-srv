@@ -22,7 +22,7 @@ router.patch('/:id', (req, res, next) => {
 
   if (req.body.password) {
     const salt = bcryptjs.genSaltSync(saltRounds)
-    const hashedPassword = bcryptjs.hashSync(password, salt)
+    const hashedPassword = bcryptjs.hashSync(req.body.password, salt)
 
     req.body.password = hashedPassword
   }
