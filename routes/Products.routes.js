@@ -59,7 +59,7 @@ router.post(
   async (req, res, next) => {
     const { name, price, description, category, brand } = req.body
     let imageUrl = null
-    if (req.file) imageUrl = req.file
+    if (req.file) imageUrl = req.file.path
 
     try {
       const product = await Product.create({

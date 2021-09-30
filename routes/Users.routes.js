@@ -6,12 +6,24 @@ const saltRounds = 10
 const Address = require('../models/Address.model')
 const User = require('../models/User.model')
 
-//GET /api/users - Gets all users from the database
+// GET /api/users - Gets all users from the database
 router.get('/', (_, res, next) => {
   User.find()
     .populate('addresses.billing addresses.shipping')
     .then((users) => {
       res.status(200).json(users)
+    })
+    .catch((err) => next(err))
+})
+
+// GET /api/users/:id
+router.get('/:id', (req, res, next) => {
+  const { id } = req.params
+
+  User.findById(id)
+    .then((user) => {
+      user.password = undefined
+      res.status(200).json(user)
     })
     .catch((err) => next(err))
 })
