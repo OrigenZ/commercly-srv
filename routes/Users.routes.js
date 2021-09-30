@@ -113,7 +113,6 @@ router.post('/:id/new-address/:type', async (req, res, next) => {
 router.patch('/:id/address/:type', async (req, res, next) => {
   const { type, id } = req.params
   const {
-    id, // takes address id from body
     firstName,
     lastName,
     company,
