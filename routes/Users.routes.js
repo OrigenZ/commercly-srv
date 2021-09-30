@@ -1,4 +1,8 @@
 const router = require('express').Router()
+
+const bcryptjs = require('bcryptjs')
+const saltRounds = 10
+
 const Address = require('../models/Address.model')
 const User = require('../models/User.model')
 
@@ -15,21 +19,17 @@ router.get('/', (_, res, next) => {
 // PATCH /api/users/:id - Edits a user in the database
 router.patch('/:id', (req, res, next) => {
   const { id } = req.params
-  const { name, surname, phone, username, email, password } = req.body
 
-  User.findByIdAndUpdate(
-    id,
-    {
-      name,
-      surname,
-      phone,
-      username,
-      email,
-      password,
-    },
-    { new: true },
-  )
+  if (req.body.password) {
+    const salt = bcryptjs.genSaltSync(saltRounds)
+    const hashedPassword = bcryptjs.hashSync(password, salt)
+
+    req.body.password = hashedPassword
+  }
+
+  User.findByIdAndUpdate(id, req.body, { new: true })
     .then((user) => {
+      user.password = undefined
       res.status(200).json({ user, message: 'User updated successfully' })
     })
     .catch((err) => next(err))
