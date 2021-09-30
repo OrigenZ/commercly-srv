@@ -13,7 +13,7 @@ router.get('/', (_, res, next) => {
 })
 
 // PATCH /api/users/:id - Edits a user in the database
-router.patch(':id', (req, res, next) => {
+router.patch('/:id', (req, res, next) => {
   const { id } = req.params
   const { name, surname, phone, username, email, password } = req.body
 
