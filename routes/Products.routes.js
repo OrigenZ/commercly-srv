@@ -58,7 +58,8 @@ router.post(
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { name, price, description, category, brand } = req.body
-    const imageUrl = req.file.path
+    let imageUrl = null
+    if (req.file) imageUrl = req.file
 
     try {
       const product = await Product.create({
@@ -94,8 +95,8 @@ router.patch(
   async (req, res, next) => {
     const { id } = req.params
     const { name, price, description, category, brand } = req.body
-    let imageUrl
 
+    let imageUrl
     if (req.file) imageUrl = req.file.path
 
     await Product.findByIdAndUpdate(
@@ -119,7 +120,7 @@ router.patch(
   },
 )
 
-// DELETE - /api/products/delete/:id - Deletes a product by id from the database
+// DELETE - /api/products/:id - Deletes a product by id from the database
 router.delete('/:id', async (req, res, next) => {
   const { id } = req.params
 
