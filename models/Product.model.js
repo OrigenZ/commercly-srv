@@ -26,11 +26,11 @@ module.exports = model(
         maxlength: 15,
         minlength: 2,
       },
-      // category: {
-      //   type: Schema.Types.ObjectId,
-      //   ref: 'Category',
-      //   required: true,
-      // },
+      category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+      },
       imageUrl: String,
     },
     {
