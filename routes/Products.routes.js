@@ -12,8 +12,8 @@ router.get('/', (_, res, next) => {
 })
 
 //GET /api/products/search - Finds products by name or brand from the database
-router.get('/search', (req, res, next) => {
-  const { query } = req.body
+router.get('/search/:query', (req, res, next) => {
+  const { query } = req.params
 
   Product.find({
     $or: [
