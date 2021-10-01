@@ -6,7 +6,7 @@ const Cart = require('../models/Cart.model')
 router.get('/:customerId', (req, res, next) => {
   const { customerId } = req.params
 
-  Cart.findById(customerId)
+  Cart.findOne({ customer: customerId })
     .then((cart) => res.status(200).json(cart))
     .catch((err) => next(err))
 })
