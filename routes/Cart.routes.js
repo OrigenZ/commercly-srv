@@ -71,7 +71,7 @@ router.post('/add-item', (req, res, next) => {
     },
     { new: true },
   )
-    .then((cart) => res.status(200).json({ cart }))
+    .then((cart) => res.status(200).json(cart))
     .catch((err) => next(err))
 })
 
