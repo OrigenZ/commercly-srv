@@ -8,6 +8,7 @@ router.get('/:customerId', (req, res, next) => {
 
   Cart.findOne({ customer: customerId })
     .then((cart) => res.status(200).json(cart))
+    .populate('products')
     .catch((err) => next(err))
 })
 
