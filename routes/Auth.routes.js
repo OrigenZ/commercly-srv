@@ -14,13 +14,11 @@ const saltRounds = 10
 router.post('/signup', (req, res, next) => {
   const { email, password, adminToken } = req.body
 
-  // Check if email or password or name are provided as empty string
   if (!email || !password) {
     res.status(400).json({ message: 'Provide email and password' })
     return
   }
 
-  // Use regex to validate the email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
   if (!emailRegex.test(email)) {
@@ -28,7 +26,6 @@ router.post('/signup', (req, res, next) => {
     return
   }
 
-  // Use regex to validate the password format
   // TODO: comprobar la contraseña directamente encriptada desde el front
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 
@@ -40,22 +37,15 @@ router.post('/signup', (req, res, next) => {
     return
   }
 
-  // Check the users collection if a user with the same email already exists
   User.findOne({ email })
     .then(async (foundUser) => {
-      // If the user with the same email already exists, send an error response
       if (foundUser) {
         res.status(400).json({ message: 'User already exists.' })
         return
       }
-
-      // If email is unique, proceed to hash the password
       const salt = bcryptjs.genSaltSync(saltRounds)
       const hashedPassword = bcryptjs.hashSync(password, salt)
 
-      // Create the new user in the database
-
-      // Take the first part of the email to use as predefined username
       let username = email.substring(0, email.indexOf('@'))
       username = username.charAt(0).toUpperCase() + username.slice(1)
 
@@ -76,7 +66,6 @@ router.post('/signup', (req, res, next) => {
       }
     })
     .then(async (user) => {
-      // Create a new cart for the newly created user
       const cart = await Cart.create({ customer: user._id })
 
       const newUser = await User.findByIdAndUpdate(
@@ -84,58 +73,44 @@ router.post('/signup', (req, res, next) => {
         { cart: cart._id },
         { new: true },
       )
-
-      // We should never expose passwords publicly
       newUser.password = undefined
 
-      // Send a json response containing the user object
       res.status(201).json({ user: newUser })
     })
     .catch((err) => next(err))
 })
 
-// /auth/login - Verifies email and password and returns a JWT
+// POST /auth/login - Verifies email and password and returns a JWT
 router.post('/login', (req, res, next) => {
   const { email, password } = req.body
-
-  // Check if email or password are provided as empty string
 
   if (!email || !password) {
     res.status(400).json({ message: 'Provide email and password.' })
     return
   }
 
-  // Check the users collection if a user with the same email exists
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        // If the user is not found, send an error response
         res.status(401).json({ message: 'User not found.' })
         return
       }
-
-      // Compare the provided password with the one saved in the database
       const passwordCorrect = bcryptjs.compareSync(password, user.password)
 
       if (passwordCorrect) {
         user.password = undefined
 
-        // Create an object that will be set as the token payload
-
         const { _id, isAdmin } = user
 
-        // Create an object that will be set as the token payload
         const payload = {
           _id,
           isAdmin,
         }
 
-        // Create and sign the token
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
           algorithm: 'HS256',
           expiresIn: '6h',
         })
-        // Send the token as the response
         res.status(200).json({ authToken: authToken })
       } else {
         res.status(401).json({ message: 'Unable to authenticate the user' })
@@ -146,13 +121,8 @@ router.post('/login', (req, res, next) => {
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get('/verify', isAuthenticated, (req, res, next) => {
-  // If JWT token is valid the payload gets decoded by the
-  // isAuthenticated middleware and made available on `req.payload`
-
   console.log(`req.payload`, req.payload)
 
-  // Send back the object with user data
-  // previously set as the token payload
   res.status(200).json(req.payload)
 })
 //

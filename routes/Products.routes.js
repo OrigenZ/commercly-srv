@@ -11,44 +11,12 @@ router.get('/', (_, res, next) => {
     .catch((err) => next(err))
 })
 
-//GET /api/products/search - Finds products by name or brand from the database
-router.get('/search/:query', (req, res, next) => {
-  const { query } = req.params
-
-  Product.find({
-    $or: [
-      { name: { $regex: query, $options: 'i' } },
-      { brand: { $regex: query, $options: 'i' } },
-    ],
-  })
-    .then((products) => {
-      res.status(200).json(products)
-    })
-    .catch((err) => {
-      next(err)
-    })
-})
-
 //GET /api/products/:id - Gets a product by id from the database
 router.get('/:id', (req, res, next) => {
   const { id } = req.params
   Product.findById(id)
     .populate('category')
     .then((product) => res.status(200).json(product))
-    .catch((err) => next(err))
-})
-
-// GET /api/products/filter/:id - Finds products by category in the database
-router.get('/filter/:id', (req, res, next) => {
-  const { id } = req.params
-
-  Category.findById(id)
-    .populate('products')
-    .then((category) => {
-      res.status(200).json({
-        products: category.products,
-      })
-    })
     .catch((err) => next(err))
 })
 

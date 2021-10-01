@@ -2,6 +2,15 @@ const router = require('express').Router()
 const User = require('../models/User.model')
 const Cart = require('../models/Cart.model')
 
+//GET /api/cart/:customerId - gets a cart from the database
+router.get('/:customerId', (req, res, next) => {
+  const { customerId } = req.params
+
+  Cart.findById(customerId)
+    .then((cart) => res.status(200).json(cart))
+    .catch((err) => next(err))
+})
+
 //GET /api/cart/checkout  - Gets relevant data from the cart for the checkout
 router.get('/checkout', async (req, res, next) => {
   const { userId } = req.body
