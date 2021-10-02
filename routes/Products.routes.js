@@ -2,7 +2,7 @@ const router = require('express').Router()
 const Product = require('../models/Product.model')
 const Category = require('../models/Category.model')
 const fileUploader = require('../config/cloudinary.config')
-const { isAuthenticated } = require('./middleware/jwt.middleware')
+const { isAuthenticated } = require('../middleware/jwt.middleware')
 
 //GET /api/products - Gets all products from the database
 router.get('/', (_, res, next) => {

@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const Category = require('../models/Category.model')
 const Product = require('../models/Product.model')
-const { isAuthenticated } = require('./middleware/jwt.middleware')
+const { isAuthenticated } = require('../middleware/jwt.middleware')
 
 // GET /api/categories - Gets all categories from the database
 router.get('/', (_, res, next) => {
