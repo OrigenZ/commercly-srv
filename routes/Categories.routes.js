@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const Category = require('../models/Category.model')
 const Product = require('../models/Product.model')
+const { isAuthenticated } = require('../middleware/jwt.middleware')
 
 // GET /api/categories - Gets all categories from the database
 router.get('/', (_, res, next) => {
@@ -35,7 +36,7 @@ router.get('/:id', (req, res, next) => {
 })
 
 //POST /api/categories/create - Creates a new category in the database
-router.post('/create', (req, res, next) => {
+router.post('/create', isAuthenticated, (req, res, next) => {
   const { name, description } = req.body
 
   Category.create({ name, description })
@@ -49,7 +50,7 @@ router.post('/create', (req, res, next) => {
 })
 
 // PATCH - /api/categories/:id - Edits a category by id from the database
-router.patch('/:id', (req, res, next) => {
+router.patch('/:id', isAuthenticated, (req, res, next) => {
   const { id } = req.params
   const { name, description } = req.body
 
@@ -63,7 +64,7 @@ router.patch('/:id', (req, res, next) => {
 })
 
 /// DELETE - /api/categories/delete/:id - Deletes a category by id from the database if it does not have associated products
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAuthenticated, async (req, res, next) => {
   const { id } = req.params
   try {
     const product = await Product.find({ category: { $eq: id } })

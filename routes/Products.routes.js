@@ -2,6 +2,7 @@ const router = require('express').Router()
 const Product = require('../models/Product.model')
 const Category = require('../models/Category.model')
 const fileUploader = require('../config/cloudinary.config')
+const { isAuthenticated } = require('../middleware/jwt.middleware')
 
 //GET /api/products - Gets all products from the database
 router.get('/', (_, res, next) => {
@@ -23,6 +24,7 @@ router.get('/:id', (req, res, next) => {
 // POST /api/products/create  - Creates a new product in the database
 router.post(
   '/create',
+  isAuthenticated,
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { name, price, description, category, brand } = req.body
@@ -59,6 +61,7 @@ router.post(
 // PATCH - /api/products/:id - Edits a product by id from the database
 router.patch(
   '/:id',
+  isAuthenticated,
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { id } = req.params
@@ -89,7 +92,7 @@ router.patch(
 )
 
 // DELETE - /api/products/:id - Deletes a product by id from the database
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAuthenticated, async (req, res, next) => {
   const { id } = req.params
 
   try {

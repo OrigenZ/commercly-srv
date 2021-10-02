@@ -1,7 +1,5 @@
 const cloudinary = require('cloudinary').v2
-
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
-
 const multer = require('multer')
 
 cloudinary.config({
@@ -14,9 +12,9 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     allowed_formats: ['jpg', 'png'],
-    folder: 'product-images', // The name of the folder in cloudinary
+    folder: 'product-images',
 
-    // resource_type: 'raw', // => this is in case you want to upload other type of files, not just images
+    // resource_type: 'raw', // =>  other type of files, not just images
   },
 })
 
