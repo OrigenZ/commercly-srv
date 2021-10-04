@@ -4,11 +4,11 @@ module.exports = model(
   'Product',
   new Schema(
     {
-      // sku: {
-      //   type: String,
-      //  required: true,
-      //   unique: true,
-      // },
+      sku: {
+        type: String,
+       required: true,
+        unique: true,
+      },
       imageUrl: {
         type: String,
       },
