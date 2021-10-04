@@ -20,11 +20,12 @@ router.get('/:id', (req, res, next) => {
   const { id } = req.params
 
   User.findById(id)
+    .populate('addresses.billing addresses.shipping')
     .then((user) => {
       user.password = undefined
       res.status(200).json(user)
     })
-    .populate('addresses.billing addresses.shipping')
+
     .catch((err) => next(err))
 })
 
