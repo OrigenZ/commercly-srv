@@ -35,7 +35,7 @@ module.exports = model(
         required: true,
       },
       zip: {
-        type: Number,
+        type: String,
         required: true,
       },
       phone: {

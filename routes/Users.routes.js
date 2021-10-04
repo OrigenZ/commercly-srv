@@ -73,8 +73,8 @@ router.get('/:id/addresses', async (req, res, next) => {
   })
 })
 
-// POST /api/users/:id/new-address/:type - Creates an address for a user in the database depending on the address type
-router.post('/:id/new-address/:type', async (req, res, next) => {
+// POST /api/users/:id/address/:type - Creates an address for a user in the database depending on the address type
+router.post('/:id/address/:type', async (req, res, next) => {
   const { type, id } = req.params
 
   const {
