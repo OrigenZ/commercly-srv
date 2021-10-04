@@ -9,6 +9,11 @@ module.exports = model(
         ref: 'User',
         required: true,
       },
+      status: {
+        type: String,
+        enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
+        default: 'Processing',
+      },
       date: {
         type: Date,
         required: true,
@@ -27,12 +32,12 @@ module.exports = model(
             type: Number,
             required: true,
           },
-          totalOrder: {
-            type: Number,
-            required: true,
-          },
         },
       ],
+      totalOrder: {
+        type: Number,
+        required: true,
+      },
     },
     {
       timestamps: true,

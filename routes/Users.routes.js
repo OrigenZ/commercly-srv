@@ -24,6 +24,7 @@ router.get('/:id', (req, res, next) => {
       user.password = undefined
       res.status(200).json(user)
     })
+    .populate('addresses.billing addresses.shipping')
     .catch((err) => next(err))
 })
 

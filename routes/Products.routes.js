@@ -27,7 +27,15 @@ router.post(
   isAuthenticated,
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
-    const { sku, name, price, description, category, brand } = req.body
+    const {
+      sku,
+      name,
+      price,
+      description,
+      category,
+      brand,
+      quantity,
+    } = req.body
     let imageUrl = null
     if (req.file) imageUrl = req.file.path
 
@@ -39,6 +47,7 @@ router.post(
         description,
         category,
         brand,
+        quantity,
         imageUrl,
       })
 
