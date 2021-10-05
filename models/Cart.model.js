@@ -7,7 +7,7 @@ module.exports = model(
       customer: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: [true, 'Cart customer id  is required'],
       },
       products: {
         type: [Schema.Types.ObjectId],

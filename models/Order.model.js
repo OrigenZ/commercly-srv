@@ -7,7 +7,7 @@ module.exports = model(
       user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: [true, 'Order user id is required'],
       },
       status: {
         type: String,
@@ -16,27 +16,27 @@ module.exports = model(
       },
       date: {
         type: Date,
-        required: true,
+        required: [true, 'Order date is required'],
       },
       orderLines: [
         {
           quantity: {
             type: Number,
-            required: true,
+            required: [true, 'Order line quantity is required'],
           },
           productId: {
             type: Schema.Types.ObjectId,
-            required: true,
+            required: [true, 'Order line product id is required'],
           },
           totalLine: {
             type: Number,
-            required: true,
+            required: [true, 'Order line total  is required'],
           },
         },
       ],
       totalOrder: {
         type: Number,
-        required: true,
+        required: [true, 'Order grand total  is required'],
       },
     },
     {

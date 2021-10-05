@@ -6,8 +6,8 @@ module.exports = model(
     {
       name: {
         type: String,
-        minlength: 3,
-        required: true,
+        minlength: [3, 'Category name must be at least 3 characters long'],
+        required: [true, 'Category name  is required'],
       },
       description: String,
       products: {

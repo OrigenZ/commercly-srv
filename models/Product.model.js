@@ -6,7 +6,7 @@ module.exports = model(
     {
       sku: {
         type: String,
-       required: true,
+        required: [true, 'Field SKU is required'],
         unique: true,
       },
       imageUrl: {
@@ -14,36 +14,32 @@ module.exports = model(
       },
       name: {
         type: String,
-        required: true,
+        required: [true, 'Product name is required'],
         unique: true,
-        minlength: 3,
-      },
-      title: {
-        type: String,
+        minlength: [3, 'Product name must be at least 3 characters long'],
       },
       description: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: [
+          5,
+          'Product description must be at least 5 characters long',
+        ],
       },
       price: {
         type: Number,
-        required: true,
-        minlength: 0,
+        required: [true, 'Product price is required'],
+        minlength: [0, 'Product price cannot be less than 0'],
       },
       category: {
         type: Schema.Types.ObjectId,
+        required: [true, 'Product category is required'],
         ref: 'Category',
-        required: true,
       },
       brand: {
         type: String,
-        maxlength: 15,
-        minlength: 2,
-      },
-      manufactureDetails: {
-        modelNumber: String,
-        releaseDate: Date,
+        maxlength: [15, 'Product brand cannot more than 15 characters long'],
+        minlength: [2, 'Product brand must be at least 2 characters long'],
       },
       shippingDetails: {
         weight: Number,
@@ -53,19 +49,23 @@ module.exports = model(
       },
       quantity: {
         type: Number,
+        min: [0, 'Product quantity cannot be less than 0'],
       },
-      inCarts: [{
-        cartId: {
-          type: Schema.Types.ObjectId,
-          ref: 'Cart',
+      inCarts: [
+        {
+          cartId: {
+            type: Schema.Types.ObjectId,
+            required: [true, 'Cart id is required'],
+            ref: 'Cart',
+          },
+          quantity: {
+            type: Number,
+          },
+          timestamp: {
+            type: Date,
+          },
         },
-        quantity: {
-          type: Number,
-        },
-        timestamp: {
-          type: Date,
-        },
-      }],
+      ],
     },
     {
       timestamps: true,

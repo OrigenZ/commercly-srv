@@ -6,11 +6,11 @@ module.exports = model(
     {
       name: {
         type: String,
-        minlength: 2,
+        minlength: [2, 'User first name must be at least 2 characters long'],
       },
       surname: {
         type: String,
-        minlength: 2,
+        minlength: [2, 'User last name must be at least 2 characters long'],
       },
       addresses: {
         billing: {
@@ -26,15 +26,19 @@ module.exports = model(
       username: String,
       email: {
         type: String,
-        required: [true, 'Email is required'],
-        match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.'],
-        unique: true,
+        required: [true, 'Field email is required'],
+        match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address.'],
+        unique: [true, 'This email is already in use'],
         lowercase: true,
         trim: true,
       },
       password: {
         type: String,
-        required: true,
+        required: [true, 'Field password is required'],
+        match: [
+          /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
+          'Password must be 6 characters long and have one number, one lowercase and one uppercase letter.',
+        ],
       },
       isAdmin: Boolean,
       cart: {
@@ -48,4 +52,3 @@ module.exports = model(
     },
   ),
 )
-

@@ -21,11 +21,10 @@ router.post('/signup', (req, res, next) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
   if (!emailRegex.test(email)) {
-    res.status(400).json({ message: 'Provide a valid email address.' })
+    res.status(400).json({ message: 'Please provide a valid email address.' })
     return
   }
 
-  // TODO: comprobar la contraseña directamente encriptada desde el front
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 
   if (!passwordRegex.test(password)) {
