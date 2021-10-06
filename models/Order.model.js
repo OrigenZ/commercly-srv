@@ -14,10 +14,6 @@ module.exports = model(
         enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
         default: 'Processing',
       },
-      date: {
-        type: Date,
-        required: [true, 'Order date is required'],
-      },
       orderLines: [
         {
           quantity: {
