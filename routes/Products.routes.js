@@ -80,7 +80,7 @@ router.patch(
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { id } = req.params
-    const { name, price, description, category, brand } = req.body
+    const { name, price, tax ,description, category, brand } = req.body
     const totalPrice =  (parseInt(price)+(parseInt(price) * parseFloat(tax)));
 
     let imageUrl
