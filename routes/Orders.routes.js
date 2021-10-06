@@ -26,7 +26,7 @@ router.get('/customer/:customerId', (req, res, next) => {
   const { customerId } = req.params
 
   Order.find({ 'user._id': customerId })
-    .populate('customer')
+    .populate('customer orderLines.productId')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
