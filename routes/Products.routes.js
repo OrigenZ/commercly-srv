@@ -37,6 +37,8 @@ router.post(
       brand,
       quantity,
     } = req.body
+    const totalPrice =  (price+(price * tax));
+
     let imageUrl = null
     if (req.file) imageUrl = req.file.path
 
@@ -45,6 +47,7 @@ router.post(
         sku,
         name,
         price,
+        totalPrice,
         tax,
         description,
         category,
@@ -78,6 +81,7 @@ router.patch(
   async (req, res, next) => {
     const { id } = req.params
     const { name, price, description, category, brand } = req.body
+    const totalPrice =  (price+(price * tax));
 
     let imageUrl
     if (req.file) imageUrl = req.file.path
@@ -87,6 +91,7 @@ router.patch(
       {
         name,
         price,
+        totalPrice,
         tax,
         description,
         category,

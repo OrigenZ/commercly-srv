@@ -31,6 +31,9 @@ module.exports = model(
         required: [true, 'Product price is required'],
         minlength: [0, 'Product price cannot be less than 0'],
       },
+      totalPrice: {
+        type: Number,
+      },
       tax: {
         type: Number,
         required: [true, 'Product tax is required'],
