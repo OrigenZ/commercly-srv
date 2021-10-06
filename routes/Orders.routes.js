@@ -33,9 +33,9 @@ router.get('/customer/:customerId', (req, res, next) => {
 
 //POST /api/orders - Creates an order in the database
 router.post('/', (req, res, next) => {
-  const { user, status, date, orderLines, totalOrder } = req.body
+  const { customer, status, date, orderLines, totalOrder } = req.body
 
-  Order.create({ user, status, date, orderLines, totalOrder })
+  Order.create({ customer, status, date, orderLines, totalOrder })
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
