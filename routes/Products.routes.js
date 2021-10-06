@@ -37,7 +37,8 @@ router.post(
       brand,
       quantity,
     } = req.body
-    const totalPrice =  (parseInt(price)+(parseInt(price) * parseFloat(tax)));
+    const totalPrice =
+      parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
 
     let imageUrl = null
     if (req.file) imageUrl = req.file.path
@@ -80,8 +81,9 @@ router.patch(
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { id } = req.params
-    const { name, price, tax ,description, category, brand } = req.body
-    const totalPrice =  (parseInt(price)+(parseInt(price) * parseFloat(tax)));
+    const { name, price, tax, description, category, brand } = req.body
+    const totalPrice =
+      parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
 
     let imageUrl
     if (req.file) imageUrl = req.file.path
