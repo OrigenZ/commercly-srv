@@ -16,7 +16,7 @@ router.get('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findById(orderId)
-    .populate('customer orderLines.productId orderLines.productId.shipping')
+    .populate('customer orderLines.productId')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
