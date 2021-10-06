@@ -6,7 +6,7 @@ const Order = require('../models/Order.model')
 //GET /api/orders - Get all orders from the database
 router.get('/', async (req, res, next) => {
   Order.find()
-    .populate('user')
+    .populate('customer')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
@@ -16,7 +16,7 @@ router.get('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findById(orderId)
-    .populate('user')
+    .populate('customer')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
@@ -26,7 +26,7 @@ router.get('/customer/:customerId', (req, res, next) => {
   const { customerId } = req.params
 
   Order.find({ 'user._id': customerId })
-    .populate('user')
+    .populate('customer')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
@@ -43,14 +43,14 @@ router.post('/', (req, res, next) => {
 //PATCH /api/orders/:orderId - Edits an order from the database by order id
 router.patch('/:orderId', (req, res, next) => {
   const { orderId } = req.params
-  const { user, status, date, orderLines, totalOrder } = req.body
+  const { customer, status, date, orderLines, totalOrder } = req.body
 
   Order.findByIdAndUpdate(
     orderId,
-    { user, status, date, orderLines, totalOrder },
+    { customer, status, date, orderLines, totalOrder },
     { new: true },
   )
-    .populate('user')
+    .populate('customer')
     .then((order) => res.status(200).json(order))
     .catch((err) => next(err))
 })
@@ -60,7 +60,7 @@ router.delete('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findByIdAndDelete(orderId)
-    .populate('user')
+    .populate('customer')
     .then((order) => res.status(200).json(order))
     .catch((err) => next(err))
 })
