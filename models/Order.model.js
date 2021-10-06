@@ -4,7 +4,7 @@ module.exports = model(
   'Order',
   new Schema(
     {
-      user: {
+      customer: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'Order user id is required'],
