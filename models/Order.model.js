@@ -14,6 +14,10 @@ module.exports = model(
         enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
         default: 'Processing',
       },
+      shippingFees:{
+        type: Number,
+        required: [true, 'Order shipping fee  is required'],
+      },
       orderLines: [
         {
           quantity: {
