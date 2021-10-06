@@ -16,7 +16,7 @@ router.get('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findById(orderId)
-    .populate('customer')
+    .populate('customer orderLines.productId')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
@@ -26,17 +26,9 @@ router.get('/customer/:customerId', (req, res, next) => {
   const { customerId } = req.params
 
   Order.find({ 'user._id': customerId })
-    .populate('customer', {
-      path: 'orderLines',
-      populate: {
-        path: 'productId',
-        model: 'Product',
-      },
-    })
+    .populate('customer')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
-  // Order.find({ 'user._id': customerId })
-  //   .populate('customer orderLines.productId')
 })
 
 //POST /api/orders - Creates an order in the database
