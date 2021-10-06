@@ -145,6 +145,7 @@ router.post('/remove-item', async (req, res, next) => {
   }
 })
 
+
 //POST /api/cart/remove-line - remove product line from cart
 router.post('/remove-line', async (req, res, next) => {
   const { productId, cartId } = req.body
@@ -160,5 +161,6 @@ router.post('/remove-line', async (req, res, next) => {
     .then((cart) => res.status(200).json(cart))
     .catch((err) => next(err))
 })
+
 
 module.exports = router

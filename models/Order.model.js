@@ -45,13 +45,3 @@ module.exports = model(
     },
   ),
 )
-
-/*
-user
-date
-orderLines
-    quantity
-    productId
-    totaLine
-totalOrder
-*/
