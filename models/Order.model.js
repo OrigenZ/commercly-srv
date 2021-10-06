@@ -35,6 +35,10 @@ module.exports = model(
           },
         },
       ],
+      totalTaxes: {
+        type: Number,
+        required: [true, 'total taxes is required'],
+      },
       totalOrder: {
         type: Number,
         required: [true, 'Order grand total  is required'],
