@@ -23,6 +23,7 @@ module.exports = model(
           productId: {
             type: Schema.Types.ObjectId,
             required: [true, 'Order line product id is required'],
+            ref: 'Product',
           },
           totalLine: {
             type: Number,
