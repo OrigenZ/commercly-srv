@@ -31,6 +31,7 @@ router.post(
       sku,
       name,
       price,
+      tax,
       description,
       category,
       brand,
@@ -44,6 +45,7 @@ router.post(
         sku,
         name,
         price,
+        tax,
         description,
         category,
         brand,
@@ -85,6 +87,7 @@ router.patch(
       {
         name,
         price,
+        tax,
         description,
         category,
         brand,

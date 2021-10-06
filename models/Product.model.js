@@ -31,6 +31,11 @@ module.exports = model(
         required: [true, 'Product price is required'],
         minlength: [0, 'Product price cannot be less than 0'],
       },
+      tax: {
+        type: Number,
+        required: [true, 'Product tax is required'],
+        minlength: [0, 'Product tax cannot be less than 0'],
+      },
       category: {
         type: Schema.Types.ObjectId,
         required: [true, 'Product category is required'],

@@ -45,11 +45,6 @@ router.post('/add-item', async (req, res, next) => {
         },
       )
     } else {
-      const oldQty = isProductInCart.inCarts[0].quantity
-      const newQty = oldQty + 1
-
-      console.log('product IS in cart')
-
       product = await Product.findOneAndUpdate(
         {
           _id: productId,
@@ -121,8 +116,6 @@ router.post('/remove-item', async (req, res, next) => {
 
     const isInSomeCart = product.inCarts[0].quantity
 
-    console.log()
-
     if (!isInSomeCart) {
       await Product.findOneAndUpdate(
         {
@@ -145,7 +138,6 @@ router.post('/remove-item', async (req, res, next) => {
   }
 })
 
-
 //POST /api/cart/remove-line - remove product line from cart
 router.post('/remove-line', async (req, res, next) => {
   const { productId, cartId } = req.body
@@ -161,6 +153,5 @@ router.post('/remove-line', async (req, res, next) => {
     .then((cart) => res.status(200).json(cart))
     .catch((err) => next(err))
 })
-
 
 module.exports = router
