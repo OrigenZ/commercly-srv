@@ -4,7 +4,7 @@ const User = require('../models/User.model')
 const Order = require('../models/Order.model')
 
 //GET /api/orders - Get all orders from the database
-router.get('/api/orders', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   Order.find()
     .populate('user')
     .then((orders) => res.status(200).json(orders))
@@ -12,7 +12,7 @@ router.get('/api/orders', async (req, res, next) => {
 })
 
 //GET /api/orders/:orderId - Get an order by order id from the database
-router.get('/api/orders/:orderId', (req, res, next) => {
+router.get('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findById(orderId)
@@ -22,7 +22,7 @@ router.get('/api/orders/:orderId', (req, res, next) => {
 })
 
 //GET /api/orders/customer/:customerId - Get orders by customer id from the database
-router.get('/api/orders/customer/:customerId', (req, res, next) => {
+router.get('/customer/:customerId', (req, res, next) => {
   const { customerId } = req.params
 
   Order.find({ 'user._id': customerId })
@@ -32,7 +32,7 @@ router.get('/api/orders/customer/:customerId', (req, res, next) => {
 })
 
 //POST /api/orders - Creates an order in the database
-router.post('/api/orders', (req, res, next) => {
+router.post('/', (req, res, next) => {
   const { user, status, date, orderLines, totalOrder } = req.body
 
   Order.create({ user, status, date, orderLines, totalOrder })
@@ -42,7 +42,7 @@ router.post('/api/orders', (req, res, next) => {
 })
 
 //PATCH /api/orders/:orderId - Edits an order from the database by order id
-router.patch('/api/orders/:orderId', (req, res, next) => {
+router.patch('/:orderId', (req, res, next) => {
   const { orderId } = req.params
   const { user, status, date, orderLines, totalOrder } = req.body
 
@@ -57,7 +57,7 @@ router.patch('/api/orders/:orderId', (req, res, next) => {
 })
 
 //DELETE /api/orders/:orderId - Deletes an order from the database by order id
-router.delete('/api/orders/:orderId', (req, res, next) => {
+router.delete('/:orderId', (req, res, next) => {
   const { orderId } = req.params
 
   Order.findByIdAndDelete(orderId)

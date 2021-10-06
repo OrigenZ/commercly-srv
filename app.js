@@ -21,6 +21,9 @@ app.use('/api/categories', categories)
 const cart = require('./routes/Cart.routes')
 app.use('/api/cart', isAuthenticated, cart)
 
+const order = require('./routes/Orders.routes')
+app.use('/api/orders', isAuthenticated, order)
+
 const users = require('./routes/Users.routes')
 app.use('/api/users', isAuthenticated, users)
 
