@@ -37,7 +37,7 @@ router.post(
       brand,
       quantity,
     } = req.body
-    const totalPrice =  (price+(price * tax));
+    const totalPrice =  (parseInt(price)+(parseInt(price) * parseFloat(tax)));
 
     let imageUrl = null
     if (req.file) imageUrl = req.file.path
@@ -81,7 +81,7 @@ router.patch(
   async (req, res, next) => {
     const { id } = req.params
     const { name, price, description, category, brand } = req.body
-    const totalPrice =  (price+(price * tax));
+    const totalPrice =  (parseInt(price)+(parseInt(price) * parseFloat(tax)));
 
     let imageUrl
     if (req.file) imageUrl = req.file.path
