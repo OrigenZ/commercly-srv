@@ -36,7 +36,6 @@ router.post('/', (req, res, next) => {
   const { user, status, date, orderLines, totalOrder } = req.body
 
   Order.create({ user, status, date, orderLines, totalOrder })
-    .populate('user')
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
