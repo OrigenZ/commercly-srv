@@ -33,9 +33,9 @@ router.get('/customer/:customerId', (req, res, next) => {
 
 //POST /api/orders - Creates an order in the database
 router.post('/', (req, res, next) => {
-  const { customer, status, shippingFee, orderLines, totalOrder } = req.body
+  const { customer, status, shippingFees, orderLines, totalOrder } = req.body
 
-  Order.create({ customer, status, shippingFee, orderLines, totalOrder })
+  Order.create({ customer, status, shippingFees, orderLines, totalOrder })
     .then((orders) => res.status(200).json(orders))
     .catch((err) => next(err))
 })
@@ -43,11 +43,11 @@ router.post('/', (req, res, next) => {
 //PATCH /api/orders/:orderId - Edits an order from the database by order id
 router.patch('/:orderId', (req, res, next) => {
   const { orderId } = req.params
-  const { customer, status, orderLines, totalOrder, shippingFee } = req.body
+  const { customer, status, orderLines, totalOrder, shippingFees } = req.body
 
   Order.findByIdAndUpdate(
     orderId,
-    { customer, status, orderLines, totalOrder, shippingFee },
+    { customer, status, orderLines, totalOrder, shippingFees },
     { new: true },
   )
     .populate('customer')
