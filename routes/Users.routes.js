@@ -138,9 +138,11 @@ router.patch('/:id/address/:type', async (req, res, next) => {
     email,
   } = req.body
 
+  console.log(id)
+
   try {
-    const address = await Address.findByIdAndUpdate(
-      id,
+    const address = await Address.findOneAndUpdate(
+      { user: id },
       {
         type,
         firstName,
