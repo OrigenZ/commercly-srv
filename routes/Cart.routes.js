@@ -142,7 +142,7 @@ router.post('/remove-item', async (req, res, next) => {
 router.post('/remove-line', async (req, res, next) => {
   const { productId, cartId } = req.body
 
-  Cart.findOneAndUpdate(
+  await Cart.findOneAndUpdate(
     { _id: cartId },
     {
       $pull: { products: { $in: [productId] } },
@@ -152,6 +152,23 @@ router.post('/remove-line', async (req, res, next) => {
     .populate('products')
     .then((cart) => res.status(200).json(cart))
     .catch((err) => next(err))
+})
+
+// PATCH /api/cart/clear/:cartId - clears a cart by cart id
+router.patch('/clear/:cartId', async (req, res, next) => {
+  const { cartId } = req.params
+
+  const emptiedCart = await Cart.findOneAndUpdate(cartId, {
+    $set: { products: [] },
+  })
+
+  const deletedProducts = await Product.updateMany(
+    {},
+    {
+      $pull: { inCarts: { cartId: emptiedCart._id } },
+    },
+  )
+  res.status(200).json({ emptiedCart, deletedProducts })
 })
 
 module.exports = router
