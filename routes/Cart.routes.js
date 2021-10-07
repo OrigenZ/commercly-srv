@@ -158,7 +158,9 @@ router.post('/remove-line', async (req, res, next) => {
 router.patch('/clear/:cartId', async (req, res, next) => {
   const { cartId } = req.params
 
-  const emptiedCart = await Cart.findOneAndUpdate(cartId, {
+  console.log(cartId)
+
+  const emptiedCart = await Cart.findByIdAndUpdate(cartId, {
     $set: { products: [] },
   })
 
