@@ -62,7 +62,7 @@ router.post(
         $push: { products: { _id: product._id } },
       })
 
-      res.status(201).json(product)
+      res.status(201).json({ product, message: 'Product created successfully' })
     } catch (err) {
       next(err)
     }
@@ -100,7 +100,7 @@ router.patch(
       .then((product) =>
         res
           .status(200)
-          .json(product),
+          .json({ product, message: 'Product updated successfully' }),
       )
       .catch((err) => next(err))
   },
