@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 mongoose
-  .connect(process.env.MONGO_URI) //DB_REMOTE
+  .connect(process.env.DB_REMOTE) //MONDO_URI
   .then((x) => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
