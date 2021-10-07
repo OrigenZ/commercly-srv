@@ -164,13 +164,13 @@ router.patch('/clear/:cartId', async (req, res, next) => {
     $set: { products: [] },
   })
 
-  const deletedProducts = await Product.updateMany(
+  await Product.updateMany(
     {},
     {
       $pull: { inCarts: { cartId: emptiedCart._id } },
     },
   )
-  res.status(200).json({ emptiedCart, deletedProducts })
+  res.status(200).json({ emptiedCart })
 })
 
 module.exports = router

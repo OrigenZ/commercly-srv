@@ -37,6 +37,7 @@ router.post(
       brand,
       quantity,
     } = req.body
+
     const totalPrice =
       parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
 
@@ -61,13 +62,7 @@ router.post(
         $push: { products: { _id: product._id } },
       })
 
-      res
-        .status(201)
-        .json(
-          res
-            .status(200)
-            .json({ product, message: 'Product created successfully' }),
-        )
+      res.status(201).json({ product, message: 'Product created successfully' })
     } catch (err) {
       next(err)
     }
