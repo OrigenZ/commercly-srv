@@ -16,7 +16,8 @@ module.exports = (app) => {
   app.use(
     cors({
       credentials: true,
-      origin: process.env.ORIGIN || 'https://commercly-cli.herokuapp.com',
+      // origin: process.env.ORIGIN || 'http://localhost:5005/',
+      origin: '*',
     }),
   )
   // In development environment the app logs
