@@ -13,13 +13,7 @@ module.exports = (app) => {
   app.set('trust proxy', 1)
 
   // controls a very specific header to pass headers from the frontend
-  app.use(
-    cors({
-      credentials: true,
-      origin: process.env.ORIGIN || 'http://localhost:5005',
-      // origin: '*'
-    }),
-  )
+  app.use(cors())
   // In development environment the app logs
   app.use(logger('dev'))
 }
