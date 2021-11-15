@@ -76,7 +76,7 @@ router.patch(
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { id } = req.params
-    const { name, price, tax, description, category, brand } = req.body
+    const { sku, quantity, name, price, tax, description, category, brand } = req.body
     const totalPrice =
       parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
 
@@ -86,13 +86,15 @@ router.patch(
     await Product.findByIdAndUpdate(
       id,
       {
+        sku,
+        quantity,
         name,
         price,
-        totalPrice,
         tax,
         description,
         category,
         brand,
+        totalPrice,
         imageUrl,
       },
       { new: true },

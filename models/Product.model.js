@@ -57,6 +57,7 @@ module.exports = model(
       },
       quantity: {
         type: Number,
+        required: [true, 'Product quantity is required'],
         min: [0, 'Product quantity cannot be less than 0'],
       },
       inCarts: [
