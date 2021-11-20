@@ -55,15 +55,16 @@ router.post('/signup', async (req, res, next) => {
       password: hashedPassword,
       isAdmin: adminStatus,
     })
-
     const cart = await Cart.create({ customer: createdUser._id })
 
-    const user = await findByIdAndUpdate(createdUser._id, { cart: cart._id }, { new: true })
-
+    const user = await User.findByIdAndUpdate(
+      createdUser._id,
+      { cart: cart._id },
+      { new: true },
+    )
     user.password = undefined
 
-    res.status(201).json({ user })
-    
+    res.status(201).json({ user: user })
   } catch (err) {
     next(err)
   }
