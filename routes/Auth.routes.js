@@ -48,17 +48,19 @@ router.post('/signup', async (req, res, next) => {
     username = username.charAt(0).toUpperCase() + username.slice(1)
 
     const adminStatus = adminToken === process.env.ADMIN_TOKEN ? true : false
-    const cart = await Cart.create({ customer: user._id })
 
-    let user = await User.create({
+    const { _id } = await User.create({
       username,
       email,
       password: hashedPassword,
       isAdmin: adminStatus,
-      cart: cart._id,
     })
 
+    const cart = await Cart.create({ customer: _id })
+
+    let user = await findByIdAndUpdate(_id, { cart: cart._id }, { new: true })
     user.password = undefined
+
     res.status(201).json({ user })
   } catch (err) {
     next(err)
@@ -83,7 +85,7 @@ router.post('/login', async (req, res, next) => {
 
     const passwordCorrect = await bcryptjs.compare(password, user.password)
     if (passwordCorrect) {
-      user.password = undefined
+      // user.password = undefined
       const { _id, isAdmin } = user
       const payload = {
         _id,
