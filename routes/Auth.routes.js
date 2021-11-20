@@ -10,7 +10,7 @@ const Cart = require('../models/Cart.model')
 const saltRounds = 10
 
 // POST /auth/signup  - Creates a new user in the database
-router.post('/signup', (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
   const { email, password, adminToken } = req.body
 
   if (!email || !password) {
@@ -19,14 +19,12 @@ router.post('/signup', (req, res, next) => {
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-
   if (!emailRegex.test(email)) {
     res.status(400).json({ message: 'Please provide a valid email address.' })
     return
   }
 
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
-
   if (!passwordRegex.test(password)) {
     res.status(400).json({
       message:
@@ -35,51 +33,40 @@ router.post('/signup', (req, res, next) => {
     return
   }
 
-  User.findOne({ email })
-    .then(async (foundUser) => {
-      if (foundUser) {
-        res.status(400).json({ message: 'User already exists.' })
-        return
-      }
-      const salt = bcryptjs.genSaltSync(saltRounds)
-      const hashedPassword = bcryptjs.hashSync(password, salt)
+  try {
+    const foundUser = await User.findOne({ email })
 
-      let username = email.substring(0, email.indexOf('@'))
-      username = username.charAt(0).toUpperCase() + username.slice(1)
+    if (foundUser) {
+      res.status(400).json({ message: 'User already exists.' })
+      return
+    }
 
-      if (adminToken === process.env.ADMIN_TOKEN) {
-        return User.create({
-          username,
-          email,
-          password: hashedPassword,
-          isAdmin: true,
-        })
-      } else {
-        return User.create({
-          username,
-          email,
-          password: hashedPassword,
-          isAdmin: false,
-        })
-      }
+    const salt = bcryptjs.genSaltSync(saltRounds)
+    const hashedPassword = bcryptjs.hashSync(password, salt)
+
+    let username = email.substring(0, email.indexOf('@'))
+    username = username.charAt(0).toUpperCase() + username.slice(1)
+
+    const adminStatus = adminToken === process.env.ADMIN_TOKEN ? true : false
+    const cart = await Cart.create({ customer: user._id })
+
+    let user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      isAdmin: adminStatus,
+      cart: cart._id,
     })
-    .then(async (user) => {
-      const cart = await Cart.create({ customer: user._id })
 
-      const newUser = await User.findByIdAndUpdate(
-        user._id,
-        { cart: cart._id },
-        { new: true },
-      )
-      newUser.password = undefined
-
-      res.status(201).json({ user: newUser })
-    })
-    .catch((err) => next(err))
+    user.password = undefined
+    res.status(201).json({ user })
+  } catch (err) {
+    next(err)
+  }
 })
 
 // POST /auth/login - Verifies email and password and returns a JWT
-router.post('/login', (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   const { email, password } = req.body
 
   if (!email || !password) {
@@ -87,34 +74,33 @@ router.post('/login', (req, res, next) => {
     return
   }
 
-  User.findOne({ email })
-    .then((user) => {
-      if (!user) {
-        res.status(401).json({ message: 'User not found.' })
-        return
+  try {
+    const user = await User.findOne({ email })
+    if (!user) {
+      res.status(401).json({ message: 'User not found.' })
+      return
+    }
+
+    const passwordCorrect = await bcryptjs.compare(password, user.password)
+    if (passwordCorrect) {
+      user.password = undefined
+      const { _id, isAdmin } = user
+      const payload = {
+        _id,
+        isAdmin,
       }
-      const passwordCorrect = bcryptjs.compareSync(password, user.password)
 
-      if (passwordCorrect) {
-        user.password = undefined
-
-        const { _id, isAdmin } = user
-
-        const payload = {
-          _id,
-          isAdmin,
-        }
-
-        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
-          algorithm: 'HS256',
-          expiresIn: '6h',
-        })
-        res.status(200).json({ authToken: authToken })
-      } else {
-        res.status(401).json({ message: 'Unable to authenticate the user' })
-      }
-    })
-    .catch((err) => next(err))
+      const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: '6h',
+      })
+      res.status(200).json({ authToken: authToken })
+      return
+    }
+    res.status(401).json({ message: 'Unable to authenticate the user' })
+  } catch (err) {
+    next(err)
+  }
 })
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client

@@ -15,7 +15,7 @@ router.get('/', (_, res, next) => {
     .catch((err) => next(err))
 })
 
-// GET /api/users/:id
+// GET /api/users/:id - Gets a user by it's id from the database
 router.get('/:id', (req, res, next) => {
   const { id } = req.params
 
