@@ -37,7 +37,7 @@ router.post('/signup', async (req, res, next) => {
     const foundUser = await User.findOne({ email })
 
     if (foundUser) {
-      res.status(400).json({ message: 'User already exists.' })
+      res.status(409).send('This email is already in use')
       return
     }
 
@@ -75,20 +75,19 @@ router.post('/login', async (req, res, next) => {
   const { email, password } = req.body
 
   if (!email || !password) {
-    res.status(400).json({ message: 'Provide email and password.' })
+    res.status(401).json({ message: 'Provide email and password.' })
     return
   }
 
   try {
     const user = await User.findOne({ email })
     if (!user) {
-      res.status(401).json({ message: 'User not found.' })
+      res.status(401).send('Credentials are not valid')
       return
     }
 
     const passwordCorrect = await bcryptjs.compare(password, user.password)
     if (passwordCorrect) {
-      // user.password = undefined
       const { _id, isAdmin } = user
       const payload = {
         _id,
@@ -102,7 +101,7 @@ router.post('/login', async (req, res, next) => {
       res.status(200).json({ authToken: authToken })
       return
     }
-    res.status(401).json({ message: 'Unable to authenticate the user' })
+    res.status(401).send('Credentials are not valid')
   } catch (err) {
     next(err)
   }
