@@ -25,7 +25,6 @@ router.get('/:id', (req, res, next) => {
       user.password = undefined
       res.status(200).json(user)
     })
-
     .catch((err) => next(err))
 })
 
