@@ -62,14 +62,18 @@ router.delete('/:id', (req, res, next) => {
 router.get('/:id/addresses', async (req, res, next) => {
   const { id } = req.params
 
-  const user = await User.findById(id).populate(
-    'addresses.billing addresses.shipping',
-  )
+  try {
+    const user = await User.findById(id).populate(
+      'addresses.billing addresses.shipping',
+    )
 
-  res.status(200).json({
-    billing: user.addresses.billing,
-    shipping: user.addresses.shipping,
-  })
+    res.status(200).json({
+      billing: user.addresses.billing,
+      shipping: user.addresses.shipping,
+    })
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 // POST /api/users/:id/address/:type - Creates an address for a user in the database depending on the address type
@@ -136,8 +140,6 @@ router.patch('/:id/address/:type', async (req, res, next) => {
     phone,
     email,
   } = req.body
-
-  console.log(id)
 
   try {
     const address = await Address.findOneAndUpdate(
