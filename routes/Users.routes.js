@@ -6,73 +6,73 @@ const Address = require('../models/Address.model')
 const User = require('../models/User.model')
 
 // GET /api/users - Gets all users from the database
-router.get('/', (_, res, next) => {
-  User.find()
-    .populate('addresses.billing addresses.shipping')
-    .then((users) => {
-      res.status(200).json(users)
-    })
-    .catch((err) => next(err))
+router.get('/', async (_, res, next) => {
+  try {
+    const users = await User.find().populate(
+      'addresses.billing addresses.shipping',
+    )
+    res.status(200).json(users)
+  } catch (err) {
+    next(err)
+  }
 })
 
 // GET /api/users/:id - Gets a user by it's id from the database
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params
-
-  User.findById(id)
-    .populate('addresses.billing addresses.shipping')
-    .then((user) => {
-      user.password = undefined
-      res.status(200).json(user)
-    })
-    .catch((err) => next(err))
+  try {
+    const user = await User.findById(id).populate(
+      'addresses.billing addresses.shipping',
+    )
+    user.password = undefined
+    res.status(200).json(user)
+  } catch (err) {
+    next(err)
+  }
 })
 
 // PATCH /api/users/:id - Edits a user in the database
-router.patch('/:id', (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
   const { id } = req.params
 
   if (req.body.password) {
     const salt = bcryptjs.genSaltSync(saltRounds)
     const hashedPassword = bcryptjs.hashSync(req.body.password, salt)
-
     req.body.password = hashedPassword
   }
-
-  User.findByIdAndUpdate(id, req.body, { new: true })
-    .then((user) => {
-      user.password = undefined
-      res.status(200).json({ user, message: 'User updated successfully' })
-    })
-    .catch((err) => next(err))
+  try {
+    const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+    user.password = undefined
+    res.status(200).json({ user, message: 'User updated successfully' })
+  } catch (err) {
+    next(err)
+  }
 })
 
 // DELETE /api/users/:id - Deletes a user from the database
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   const { id } = req.params
-
-  User.findByIdAndDelete(id)
-    .then((user) => {
-      res.status(200).json({ user, message: 'User deleted successfully' })
-    })
-    .catch((err) => next(err))
+  try {
+    const user = await User.findByIdAndDelete(id)
+    res.status(200).json({ user, message: 'User deleted successfully' })
+  } catch (err) {
+    next(err)
+  }
 })
 
 // GET /api/users/:id/addresses - Gets all addresses of a user by id from the database
 router.get('/:id/addresses', async (req, res, next) => {
   const { id } = req.params
-
   try {
     const user = await User.findById(id).populate(
       'addresses.billing addresses.shipping',
     )
-
     res.status(200).json({
       billing: user.addresses.billing,
       shipping: user.addresses.shipping,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 })
 
