@@ -18,4 +18,9 @@ const storage = new CloudinaryStorage({
   },
 })
 
-module.exports = multer({ storage })
+module.exports = multer({
+  storage,
+  limits: {
+    fileSize: 8000000, // Compliant: 8MB
+  },
+})

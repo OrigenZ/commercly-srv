@@ -55,7 +55,7 @@ router.delete('/:id', (req, res, next) => {
     .then((user) => {
       res.status(200).json({ user, message: 'User deleted successfully' })
     })
-    .catch(() => {})
+    .catch((err) => next(err))
 })
 
 // GET /api/users/:id/addresses - Gets all addresses of a user by id from the database

@@ -8,3 +8,4 @@ npm-debug.log
 .env
 
 resources.txt
+sonar-project.properties
