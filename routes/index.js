@@ -6,6 +6,7 @@ const categoriesRoutes = require('./Categories.routes')
 const cartRoutes = require('./Cart.routes')
 const ordersRoutes = require('./Orders.routes')
 const usersRoutes = require('./Users.routes')
+const paymentsRoutes = require('./Payments.routes')
 
 /* GET home page */
 router.get('/', (req, res, next) => {
@@ -18,5 +19,6 @@ router.use('/categories', categoriesRoutes)
 router.use('/cart', isAuthenticated, cartRoutes)
 router.use('/orders', isAuthenticated, ordersRoutes)
 router.use('/users', isAuthenticated, usersRoutes)
+router.use('/payments', isAuthenticated, paymentsRoutes)
 
 module.exports = router
