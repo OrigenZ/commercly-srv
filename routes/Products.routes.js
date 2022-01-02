@@ -5,20 +5,24 @@ const fileUploader = require('../config/cloudinary.config')
 const { isAuthenticated } = require('../middleware/jwt.middleware')
 
 //GET /api/products - Gets all products from the database
-router.get('/', (_, res, next) => {
-  Product.find()
-    .populate('category')
-    .then((products) => res.status(200).json({ products }))
-    .catch((err) => next(err))
+router.get('/', async (_, res, next) => {
+  try {
+    const products = await Product.find().populate('category')
+    res.status(200).json({ products })
+  } catch (err) {
+    next(err)
+  }
 })
 
 //GET /api/products/:id - Gets a product by id from the database
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params
-  Product.findById(id)
-    .populate('category')
-    .then((product) => res.status(200).json(product))
-    .catch((err) => next(err))
+  try {
+    const product = await Product.findById(id).populate('category')
+    res.status(200).json(product)
+  } catch (err) {
+    next(err)
+  }
 })
 
 // POST /api/products/create  - Creates a new product in the database
@@ -41,8 +45,7 @@ router.post(
     const totalPrice =
       parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
 
-    let imageUrl = null
-    if (req.file) imageUrl = req.file.path
+    const imageUrl = req.file ? req.file.path : null
 
     try {
       const product = await Product.create({
@@ -76,35 +79,42 @@ router.patch(
   fileUploader.single('imageUrl'),
   async (req, res, next) => {
     const { id } = req.params
-    const { sku, quantity, name, price, tax, description, category, brand } = req.body
+    const {
+      sku,
+      quantity,
+      name,
+      price,
+      tax,
+      description,
+      category,
+      brand,
+    } = req.body
+
     const totalPrice =
       parseInt(price) + (parseInt(price) * parseFloat(tax)) / 100
+    const imageUrl = req.file ? req.file.path : null
 
-    let imageUrl
-    if (req.file) imageUrl = req.file.path
-
-    await Product.findByIdAndUpdate(
-      id,
-      {
-        sku,
-        quantity,
-        name,
-        price,
-        tax,
-        description,
-        category,
-        brand,
-        totalPrice,
-        imageUrl,
-      },
-      { new: true },
-    )
-      .then((product) =>
-        res
-          .status(200)
-          .json({ product, message: 'Product updated successfully' }),
+    try {
+      const product = await Product.findByIdAndUpdate(
+        id,
+        {
+          sku,
+          quantity,
+          name,
+          price,
+          tax,
+          description,
+          category,
+          brand,
+          totalPrice,
+          imageUrl,
+        },
+        { new: true },
       )
-      .catch((err) => next(err))
+      res.status(200).json({ product, message: 'Product updated successfully' })
+    } catch (err) {
+      next(err)
+    }
   },
 )
 
